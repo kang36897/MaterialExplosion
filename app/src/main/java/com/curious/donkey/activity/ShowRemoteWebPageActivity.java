@@ -3,6 +3,7 @@ package com.curious.donkey.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.webkit.WebView;
 
@@ -24,7 +25,6 @@ public class ShowRemoteWebPageActivity extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.activity_show_web_page);
 
-
         mWebView = (WebView) findViewById(R.id.webView);
         mWebView.getSettings().setJavaScriptEnabled(true);
         Log.d(TAG, mWebView.getSettings().getUserAgentString());
@@ -33,6 +33,12 @@ public class ShowRemoteWebPageActivity extends AppCompatActivity {
         mWebView.loadUrl("http://www.baidu.com");
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+
+        return super.onTouchEvent(event);
+    }
 
     @Override
     public void onBackPressed() {

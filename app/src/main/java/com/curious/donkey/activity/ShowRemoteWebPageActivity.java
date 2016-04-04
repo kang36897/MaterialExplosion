@@ -34,10 +34,10 @@ public class ShowRemoteWebPageActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent ev) {
 
 
-        return super.onTouchEvent(event);
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override

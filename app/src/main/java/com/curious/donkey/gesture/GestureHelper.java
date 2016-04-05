@@ -10,6 +10,11 @@ import android.view.VelocityTracker;
  */
 public class GestureHelper {
 
+    final static int STATUS_NORMAL = 0;
+    final static int STATUS_FLING = 1;
+    private int mStatus;
+
+
     private Context mContext;
     private VelocityTracker mVelocityTracker;
 

@@ -37,7 +37,7 @@ public class ShowLocalWebPageActivity extends AppCompatActivity {
 
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setAppCacheEnabled(true);
-
+        mWebView.getSettings().setAllowFileAccessFromFileURLs(true);
         mWebView.getSettings().setUseWideViewPort(true);
         if (IS_NEWER_THAN_KITKAT) {
             mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MaterialExplosion</string>
+    <string name="btn_ok">ok</string>
 </resources>

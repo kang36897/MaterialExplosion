@@ -1,6 +1,7 @@
 package com.curious.support.utils;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -14,4 +15,6 @@ public class StateUtils {
         NetworkInfo mActiveNetwork = manager.getActiveNetworkInfo();
         return mActiveNetwork.isConnectedOrConnecting();
     }
+
+
 }

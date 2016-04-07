@@ -1,7 +1,6 @@
 package com.curious.donkey.activity;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.os.Bundle;

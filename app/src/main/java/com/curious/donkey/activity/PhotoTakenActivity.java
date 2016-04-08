@@ -2,6 +2,10 @@ package com.curious.donkey.activity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -44,15 +48,67 @@ public class PhotoTakenActivity extends AppCompatActivity implements CameraHolde
             try {
                 outputStream = new FileOutputStream(image);
                 outputStream.write(data);
+                outputStream.close();
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "onPictureTaken()->", e);
             } catch (IOException e) {
                 Log.e(TAG, "onPictureTaken()->", e);
             }
 
+            //clip the img
+
+            Point[] sensitiveAreas = mPreview.getClip();
+
+            clipImage(data, sensitiveAreas, mPictureOrientation);
 
         }
     };
+
+    private void clipImage(byte[] data, Point[] sensitiveAreas, int rotateDegree) {
+        File image;
+        FileOutputStream outputStream;
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inScaled = false;
+        opts.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(data, 0, data.length, opts);
+        int imgWidth = opts.outWidth;
+        int imgHeight = opts.outHeight;
+
+        opts.inJustDecodeBounds = false;
+        Bitmap source = BitmapFactory.decodeByteArray(data, 0, data.length, opts);
+
+        int x, y, wd, wh;
+        float wRate = (float) sensitiveAreas[1].x / sensitiveAreas[0].x;
+        float hRate = (float) sensitiveAreas[1].y / sensitiveAreas[0].y;
+
+        if (imgWidth > imgHeight) {
+            wd = (int) (hRate * imgWidth);
+            wh = (int) (wRate * imgHeight);
+        } else {
+            wd = (int) (wRate * imgWidth);
+            wh = (int) (hRate * imgHeight);
+        }
+
+        x = (imgWidth - wd) / 2;
+        y = (imgHeight - wh) / 2;
+
+        Matrix m = new Matrix();
+        m.setRotate(rotateDegree);
+        Bitmap clippedOne = Bitmap.createBitmap(source, x, y, wd, wh, m, false);
+        source.recycle();
+
+        image = StorageUtil.getOutputMediaFile(StorageUtil.MEDIA_TYPE_IMAGE);
+        try {
+            outputStream = new FileOutputStream(image);
+            clippedOne.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
+            outputStream.close();
+            clippedOne.recycle();
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "onPictureTaken()->", e);
+        } catch (IOException e) {
+            Log.e(TAG, "onPictureTaken()->", e);
+        }
+    }
 
     private Camera.AutoFocusCallback mAutoFocusCallback = new Camera.AutoFocusCallback() {
         @Override
@@ -133,6 +189,7 @@ public class PhotoTakenActivity extends AppCompatActivity implements CameraHolde
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume()");
         mOrientationEventListener.enable();
         CameraHolder.getInstance().openCamera();
     }
@@ -140,6 +197,7 @@ public class PhotoTakenActivity extends AppCompatActivity implements CameraHolde
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause()");
         mOrientationEventListener.disable();
         CameraHolder.getInstance().releaseCamera();
     }
@@ -147,11 +205,6 @@ public class PhotoTakenActivity extends AppCompatActivity implements CameraHolde
     @Override
     public void onCameraInitialized(Camera camera, int cameraId) {
         mCamera = camera;
-
-        Camera.CameraInfo cameraInfo = CameraHolder.getInstance().getCameraInfo();
-        if (cameraInfo.canDisableShutterSound) {
-            mCamera.enableShutterSound(true);
-        }
         CameraUtils.setCameraDisplayOrientation(this, cameraId, mCamera);
     }
 
@@ -189,17 +242,6 @@ public class PhotoTakenActivity extends AppCompatActivity implements CameraHolde
             // the correct orientation.
             if (orientation == ORIENTATION_UNKNOWN) return;
             mOrientation = CameraUtils.roundOrientation(orientation);
-//            // When the screen is unlocked, display rotation may change. Always
-//            // calculate the up-to-date orientationCompensation.
-//            int orientationCompensation = mOrientation
-//                    + CameraUtils.getDisplayRotation((Activity) getContext());
-//            if (mOrientationCompensation != orientationCompensation) {
-//                mOrientationCompensation = orientationCompensation;
-//                if (!mIsImageCaptureIntent) {
-//                    setOrientationIndicator(mOrientationCompensation);
-//                }
-//                mHeadUpDisplay.setOrientation(mOrientationCompensation);
-//            }
         }
     }
 }

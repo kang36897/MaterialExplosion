@@ -1,5 +1,6 @@
 package com.curious.donkey.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Point;
 import android.hardware.Camera;
@@ -9,6 +10,7 @@ import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.OrientationEventListener;
 import android.view.SurfaceView;
@@ -16,25 +18,22 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.curious.donkey.R;
+import com.curious.donkey.data.MImage;
 import com.curious.donkey.device.CameraHolderS;
 import com.curious.donkey.device.CameraSettings;
 import com.curious.donkey.device.OnCameraEventListener;
+import com.curious.donkey.fragment.ImageReviewFragment;
 import com.curious.donkey.utils.CameraUtils;
 import com.curious.donkey.utils.ImageUtils;
-import com.curious.donkey.utils.StorageUtil;
 import com.curious.donkey.view.PreviewFrame;
 import com.curious.donkey.view.ShutterButton;
 import com.curious.support.logger.Log;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 /**
  * Created by lulala on 9/4/16.
  */
-public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCameraEventListener, ShutterButton.OnShutterButtonListener {
+public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCameraEventListener,
+        ShutterButton.OnShutterButtonListener, ImageReviewFragment.OnImageActionListener {
 
     private static final String TAG = "CameraOnMainLoopActivity";
     private static final int FOCUS_NOT_STARTED = 0;
@@ -43,6 +42,7 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
     private static final int FOCUS_SUCCESS = 3;
     private static final int FOCUS_FAIL = 4;
     private static final int FOCUS_BEEP_VOLUME = 100;
+    private final static String FRAGMENT_TAG = "image_review";
     private SurfaceView mSurfaceView;
     private CameraHolderS mCameraHolder;
     private ShutterButton mShutterBtn;
@@ -52,24 +52,8 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
             OrientationEventListener.ORIENTATION_UNKNOWN};
     private int mFocusState = FOCUS_NOT_STARTED;
     private ToneGenerator mFocusToneGenerator;
-
     private View mClipArea;
     private Point[] mSensitiveAreas = new Point[2];
-    private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-            //clip the img
-            ImageUtils.clipImage(data, mSensitiveAreas, mPictureOrientation[0]);
-        }
-    };
-
-    private Camera.ShutterCallback mShutterCallBack = new Camera.ShutterCallback() {
-        @Override
-        public void onShutter() {
-            mFocusState = FOCUS_NOT_STARTED;
-        }
-    };
-
     private Camera.AutoFocusCallback mAutoFocusCallback = new Camera.AutoFocusCallback() {
         @Override
         public void onAutoFocus(boolean focused, Camera camera) {
@@ -100,6 +84,54 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
             }
         }
     };
+    private ProgressDialog mProgressDialog;
+    private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
+        @Override
+        public void onPictureTaken(final byte[] data, Camera camera) {
+            //clip the img
+            new Thread() {
+                @Override
+                public void run() {
+                    final MImage bucket = new MImage();
+                    ImageUtils.clipImage(data, mSensitiveAreas, mPictureOrientation[0], bucket);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mProgressDialog.isShowing()) {
+                                mProgressDialog.dismiss();
+                            }
+                            reviewImageSliced(bucket);
+
+                        }
+                    });
+                }
+            }.start();
+
+        }
+    };
+    private Camera.ShutterCallback mShutterCallBack = new Camera.ShutterCallback() {
+        @Override
+        public void onShutter() {
+            mFocusState = FOCUS_NOT_STARTED;
+            if (mProgressDialog.isShowing()) {
+                return;
+            }
+
+            mProgressDialog.show();
+        }
+    };
+
+    public void reviewImageSliced(MImage bucket) {
+
+        Bundle args = new Bundle();
+        args.putString(ImageReviewFragment.SOURCE_IMG_PATH, bucket.mImgPath);
+        args.putParcelable(ImageReviewFragment.SOURCE_IMG, bucket.mBitmap);
+
+        Fragment fragment = ImageReviewFragment.getInstance(args);
+        getSupportFragmentManager().beginTransaction().add(R.id.image_review_container, fragment, FRAGMENT_TAG).commit();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,6 +164,10 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
 
         mOrientationEventListener = new InternalOrientationEventListener(this);
         mOrientationEventListener.enable();
+
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setMessage(getString(R.string.save_img_in_progress));
     }
 
     @Override
@@ -150,6 +186,10 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
         if (mFocusToneGenerator != null) {
             mFocusToneGenerator.release();
             mFocusToneGenerator = null;
+        }
+
+        if (mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
     }
 
@@ -231,6 +271,22 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
             mFocusState = FOCUSING_SNAP_ON_FINISH;
 
         } else {
+
+        }
+
+    }
+
+    @Override
+    public void onImageReceived(boolean kept, String path) {
+
+        //TODO you can do something to the path
+        if (kept) {
+
+        } else {
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+
+            mCameraHolder.repreivew();
 
         }
 

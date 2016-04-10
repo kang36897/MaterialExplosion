@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">MaterialExplosion</string>
     <string name="btn_ok">ok</string>
+    <string name="action_recapture">Drop this one</string>
+    <string name="action_chosen">Take this one</string>
+    <string name="save_img_in_progress"><![CDATA[Image  Saving ...]]></string>
 </resources>

@@ -202,6 +202,17 @@ public class CameraHolderS implements SurfaceHolder.Callback {
         }
     }
 
+    public void repreivew() {
+        if (!isCameraAvailable()) {
+            return;
+        }
+
+        if (isPausing()) {
+            mCamera.startPreview();
+            mStatus = STATUS_PREVIEWING;
+        }
+
+    }
 
     public boolean isPausing() {
         return mStatus == STATUS_PAUSING;

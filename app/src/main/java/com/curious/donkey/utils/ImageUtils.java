@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.media.ExifInterface;
 
+import com.curious.donkey.data.MImage;
 import com.curious.support.logger.Log;
 
 import java.io.File;
@@ -32,7 +33,7 @@ public class ImageUtils {
         }
     }
 
-    public static void clipImage(byte[] data, Point[] sensitiveAreas, int rotateDegree) {
+    public static void clipImage(byte[] data, Point[] sensitiveAreas, int rotateDegree, MImage mImage) {
         File image;
         FileOutputStream outputStream;
         BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -70,7 +71,13 @@ public class ImageUtils {
             outputStream = new FileOutputStream(image);
             clippedOne.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
             outputStream.close();
-            clippedOne.recycle();
+
+            if (mImage == null) {
+                clippedOne.recycle();
+            } else {
+                mImage.mBitmap = clippedOne;
+                mImage.mImgPath = image.getAbsolutePath();
+            }
 
 
         } catch (FileNotFoundException e) {

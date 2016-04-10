@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="btn_ok">确定</string>
+    <string name="action_recapture">重拍</string>
+    <string name="action_chosen">选取</string>
+    <string name="save_img_in_progress"><![CDATA[保存图片 ...]]></string>
 </resources>

@@ -49,12 +49,10 @@ public class PhotoTakenActivity extends AppCompatActivity implements CameraHolde
 
             //clip the img
             Point[] sensitiveAreas = mPreview.getClip();
-            ImageUtils.clipImage(data, sensitiveAreas, mPictureOrientation);
+            ImageUtils.clipImage(data, sensitiveAreas, mPictureOrientation, null);
 
         }
     };
-
-
 
 
     private Camera.AutoFocusCallback mAutoFocusCallback = new Camera.AutoFocusCallback() {

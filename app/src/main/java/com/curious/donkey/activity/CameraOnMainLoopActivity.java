@@ -25,9 +25,12 @@ import com.curious.donkey.device.OnCameraEventListener;
 import com.curious.donkey.fragment.ImageReviewFragment;
 import com.curious.donkey.utils.CameraUtils;
 import com.curious.donkey.utils.ImageUtils;
+import com.curious.donkey.utils.StorageUtil;
 import com.curious.donkey.view.PreviewFrame;
 import com.curious.donkey.view.ShutterButton;
 import com.curious.support.logger.Log;
+
+import java.io.File;
 
 /**
  * Created by lulala on 9/4/16.
@@ -54,6 +57,44 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
     private ToneGenerator mFocusToneGenerator;
     private View mClipArea;
     private Point[] mSensitiveAreas = new Point[2];
+    private ProgressDialog mProgressDialog;
+    private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
+        @Override
+        public void onPictureTaken(final byte[] data, Camera camera) {
+            //clip the img
+            new Thread() {
+                @Override
+                public void run() {
+                    final MImage bucket = new MImage();
+                    ImageUtils.clipImage(data, mSensitiveAreas, bucket);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mProgressDialog.isShowing()) {
+                                mProgressDialog.dismiss();
+                            }
+                            reviewImageSliced(bucket);
+
+                        }
+                    });
+                }
+            }.start();
+
+        }
+    };
+    private Camera.ShutterCallback mShutterCallBack = new Camera.ShutterCallback() {
+        @Override
+        public void onShutter() {
+            mFocusState = FOCUS_NOT_STARTED;
+            if (mProgressDialog.isShowing()) {
+                return;
+            }
+
+            mProgressDialog.show();
+        }
+    };
     private Camera.AutoFocusCallback mAutoFocusCallback = new Camera.AutoFocusCallback() {
         @Override
         public void onAutoFocus(boolean focused, Camera camera) {
@@ -82,44 +123,6 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
                 // User has released the focus key before focus completes.
                 // Do nothing.
             }
-        }
-    };
-    private ProgressDialog mProgressDialog;
-    private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
-        @Override
-        public void onPictureTaken(final byte[] data, Camera camera) {
-            //clip the img
-            new Thread() {
-                @Override
-                public void run() {
-                    final MImage bucket = new MImage();
-                    ImageUtils.clipImage(data, mSensitiveAreas, mPictureOrientation[0], bucket);
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            if (mProgressDialog.isShowing()) {
-                                mProgressDialog.dismiss();
-                            }
-                            reviewImageSliced(bucket);
-
-                        }
-                    });
-                }
-            }.start();
-
-        }
-    };
-    private Camera.ShutterCallback mShutterCallBack = new Camera.ShutterCallback() {
-        @Override
-        public void onShutter() {
-            mFocusState = FOCUS_NOT_STARTED;
-            if (mProgressDialog.isShowing()) {
-                return;
-            }
-
-            mProgressDialog.show();
         }
     };
 
@@ -283,11 +286,12 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
         if (kept) {
 
         } else {
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
-            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-            mCameraHolder.repreivew();
+
         }
 
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        mCameraHolder.repreivew();
     }
 
     class InternalOrientationEventListener extends OrientationEventListener {

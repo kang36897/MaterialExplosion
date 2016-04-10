@@ -8,6 +8,7 @@ import android.os.Build;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 
+import com.curious.donkey.utils.CameraUtils;
 import com.curious.support.logger.Log;
 
 import java.io.IOException;
@@ -18,13 +19,13 @@ import java.util.List;
 /**
  * Created by lulala on 9/4/16.
  */
-public class CameraHolderS implements SurfaceHolder.Callback {
+public class CameraHolderSuper implements SurfaceHolder.Callback {
     public final static int STATUS_DEFAULT = -1;
     public final static int STATUS_RELEASED = -2;
     public final static int STATUS_OPENED = 0;
     public final static int STATUS_PREVIEWING = 1;
     public final static int STATUS_PAUSING = 2;
-    final static String TAG = "CameraHolderS";
+    final static String TAG = "CameraHolderSuper";
     private int mStatus = STATUS_DEFAULT;
     private Camera mCamera;
     private int mCameraId = Integer.MIN_VALUE;
@@ -134,7 +135,15 @@ public class CameraHolderS implements SurfaceHolder.Callback {
             mParameters.setPreviewFrameRate(max);
         }
 
-        CameraSettings.updateFocusMode(mParameters, Parameters.FOCUS_MODE_AUTO);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            if (!CameraSettings.updateFocusMode(mParameters, Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                CameraSettings.updateFocusMode(mParameters, Parameters.FOCUS_MODE_AUTO);
+            }
+
+        } else {
+            CameraSettings.updateFocusMode(mParameters, Parameters.FOCUS_MODE_AUTO);
+        }
+
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {

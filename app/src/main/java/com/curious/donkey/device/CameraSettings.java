@@ -15,10 +15,12 @@ import java.util.List;
  */
 public class CameraSettings {
 
-    public static void updateFocusMode(Parameters parameters, String focusMode) {
+    public static boolean updateFocusMode(Parameters parameters, String focusMode) {
         if (CameraUtils.isSupported(focusMode, parameters.getSupportedFocusModes())) {
             parameters.setFocusMode(focusMode);
+            return true;
         }
+        return false;
     }
 
     public static void updateSceneMode(Parameters parameters, String sceneMode) {

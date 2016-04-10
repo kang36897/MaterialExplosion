@@ -19,7 +19,7 @@ import android.view.ViewTreeObserver;
 
 import com.curious.donkey.R;
 import com.curious.donkey.data.MImage;
-import com.curious.donkey.device.CameraHolderS;
+import com.curious.donkey.device.CameraHolderSuper;
 import com.curious.donkey.device.CameraSettings;
 import com.curious.donkey.device.OnCameraEventListener;
 import com.curious.donkey.fragment.ImageReviewFragment;
@@ -44,7 +44,7 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
     private static final int FOCUS_BEEP_VOLUME = 100;
     private final static String FRAGMENT_TAG = "image_review";
     private SurfaceView mSurfaceView;
-    private CameraHolderS mCameraHolder;
+    private CameraHolderSuper mCameraHolder;
     private ShutterButton mShutterBtn;
     private OrientationEventListener mOrientationEventListener;
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -138,7 +138,7 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_on_main_loop);
 
-        mCameraHolder = new CameraHolderS();
+        mCameraHolder = new CameraHolderSuper();
         mCameraHolder.setOnCameraEventListener(this);
 
         mSurfaceView = (SurfaceView) findViewById(R.id.preview_surface);
@@ -279,15 +279,13 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
     @Override
     public void onImageReceived(boolean kept, String path) {
 
-        //TODO you can do something to the path
+        //TODO you can do something to the path after you
         if (kept) {
 
         } else {
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-
             mCameraHolder.repreivew();
-
         }
 
     }

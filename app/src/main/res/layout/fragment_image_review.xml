@@ -13,27 +13,34 @@
         android:layout_height="240dp" />
 
 
-    <Button
-        android:layout_marginBottom="16dp"
-        android:id="@+id/drop_this"
-        android:text="@string/action_recapture"
-        android:textSize="18sp"
-        android:textColor="#fff"
-        android:layout_alignParentLeft="true"
+    <LinearLayout
         android:layout_alignParentBottom="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
-    <Button
-        android:layout_marginBottom="16dp"
-        android:id="@+id/take_this"
-        android:layout_toRightOf="@+id/drop_this"
-        android:text="@string/action_chosen"
-        android:textSize="18sp"
-        android:textColor="#fff"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <Button
+
+            android:id="@+id/drop_this"
+            android:text="@string/action_recapture"
+            android:textSize="18sp"
+            android:textColor="#fff"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/take_this"
+            android:text="@string/action_chosen"
+            android:textSize="18sp"
+            android:textColor="#fff"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

@@ -17,6 +17,7 @@ import android.widget.Button;
 import com.curious.donkey.R;
 import com.curious.donkey.device.CameraHolder;
 import com.curious.donkey.utils.CameraUtils;
+import com.curious.donkey.utils.ImageUtils;
 import com.curious.donkey.utils.StorageUtil;
 import com.curious.donkey.view.CameraPreview;
 import com.curious.support.logger.Log;
@@ -44,71 +45,17 @@ public class PhotoTakenActivity extends AppCompatActivity implements CameraHolde
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             File image = StorageUtil.getOutputMediaFile(StorageUtil.MEDIA_TYPE_IMAGE);
-            FileOutputStream outputStream = null;
-            try {
-                outputStream = new FileOutputStream(image);
-                outputStream.write(data);
-                outputStream.close();
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "onPictureTaken()->", e);
-            } catch (IOException e) {
-                Log.e(TAG, "onPictureTaken()->", e);
-            }
+            ImageUtils.saveImage(data, image);
 
             //clip the img
-
             Point[] sensitiveAreas = mPreview.getClip();
-
-            clipImage(data, sensitiveAreas, mPictureOrientation);
+            ImageUtils.clipImage(data, sensitiveAreas, mPictureOrientation);
 
         }
     };
 
-    private void clipImage(byte[] data, Point[] sensitiveAreas, int rotateDegree) {
-        File image;
-        FileOutputStream outputStream;
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inScaled = false;
-        opts.inJustDecodeBounds = true;
-        BitmapFactory.decodeByteArray(data, 0, data.length, opts);
-        int imgWidth = opts.outWidth;
-        int imgHeight = opts.outHeight;
 
-        opts.inJustDecodeBounds = false;
-        Bitmap source = BitmapFactory.decodeByteArray(data, 0, data.length, opts);
 
-        int x, y, wd, wh;
-        float wRate = (float) sensitiveAreas[1].x / sensitiveAreas[0].x;
-        float hRate = (float) sensitiveAreas[1].y / sensitiveAreas[0].y;
-
-        if (imgWidth > imgHeight) {
-            wd = (int) (hRate * imgWidth);
-            wh = (int) (wRate * imgHeight);
-        } else {
-            wd = (int) (wRate * imgWidth);
-            wh = (int) (hRate * imgHeight);
-        }
-
-        x = (imgWidth - wd) / 2;
-        y = (imgHeight - wh) / 2;
-
-        Matrix m = new Matrix();
-        m.setRotate(rotateDegree);
-        Bitmap clippedOne = Bitmap.createBitmap(source, x, y, wd, wh, m, false);
-        source.recycle();
-
-        image = StorageUtil.getOutputMediaFile(StorageUtil.MEDIA_TYPE_IMAGE);
-        try {
-            outputStream = new FileOutputStream(image);
-            clippedOne.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
-            outputStream.close();
-            clippedOne.recycle();
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "onPictureTaken()->", e);
-        } catch (IOException e) {
-            Log.e(TAG, "onPictureTaken()->", e);
-        }
-    }
 
     private Camera.AutoFocusCallback mAutoFocusCallback = new Camera.AutoFocusCallback() {
         @Override

@@ -8,6 +8,7 @@ import android.hardware.Camera.CameraInfo;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import com.curious.donkey.device.CameraOnDevice;
 import com.curious.support.logger.Log;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class CameraUtils {
      */
     public static boolean checkCameraHardware(Context context) {
         // this device has a camera
-// no camera on this device
+        // no camera on this device
         return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
     }
 
@@ -67,7 +68,6 @@ public class CameraUtils {
                 minDiff = Math.abs(size.height - targetHeight);
             }
         }
-
 
         return optimalSize;
 
@@ -141,8 +141,7 @@ public class CameraUtils {
     }
 
     public static void setCameraDisplayOrientation(Activity activity, int cameraId, Camera camera) {
-        CameraInfo info = new CameraInfo();
-        Camera.getCameraInfo(cameraId, info);
+        CameraInfo info = CameraOnDevice.CAMERA_INFOS[cameraId];
 
         int degrees = getDisplayRotation(activity);
 

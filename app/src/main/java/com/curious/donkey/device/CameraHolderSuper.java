@@ -8,7 +8,6 @@ import android.os.Build;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 
-import com.curious.donkey.utils.CameraUtils;
 import com.curious.support.logger.Log;
 
 import java.io.IOException;
@@ -25,6 +24,8 @@ public class CameraHolderSuper implements SurfaceHolder.Callback {
     public final static int STATUS_OPENED = 0;
     public final static int STATUS_PREVIEWING = 1;
     public final static int STATUS_PAUSING = 2;
+    public final static int SNAPSHOT_IN_PROGRESS = 2;
+
     final static String TAG = "CameraHolderSuper";
     private int mStatus = STATUS_DEFAULT;
     private Camera mCamera;
@@ -145,7 +146,6 @@ public class CameraHolderSuper implements SurfaceHolder.Callback {
         }
 
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 
             List<Area> areas = new ArrayList<>();
@@ -185,7 +185,7 @@ public class CameraHolderSuper implements SurfaceHolder.Callback {
         }
 
 
-        mStatus = STATUS_PAUSING;
+        mStatus = SNAPSHOT_IN_PROGRESS;
         // See android.hardware.Camera.Parameters.setRotation for
         // documentation.
         int rotation = 0;
@@ -229,6 +229,7 @@ public class CameraHolderSuper implements SurfaceHolder.Callback {
     }
 
     public void cancelFocus() {
+
         mCamera.cancelAutoFocus();
     }
 }

@@ -25,12 +25,9 @@ import com.curious.donkey.device.OnCameraEventListener;
 import com.curious.donkey.fragment.ImageReviewFragment;
 import com.curious.donkey.utils.CameraUtils;
 import com.curious.donkey.utils.ImageUtils;
-import com.curious.donkey.utils.StorageUtil;
 import com.curious.donkey.view.PreviewFrame;
 import com.curious.donkey.view.ShutterButton;
 import com.curious.support.logger.Log;
-
-import java.io.File;
 
 /**
  * Created by lulala on 9/4/16.
@@ -250,14 +247,19 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
 
         if (pressed) {
 
-            if (mFocusState == FOCUSING) {
-                return;
-            }
-
             mFocusState = FOCUSING;
             mCameraHolder.onFocus(mAutoFocusCallback);
         } else {
-            mCameraHolder.cancelFocus();
+            if (!mCameraHolder.isPausing() && (mFocusState == FOCUSING
+                    || mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)) {
+                Log.v(TAG, "Cancel autofocus.");
+                mCameraHolder.cancelFocus();
+            }
+
+            if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
+                mFocusState = FOCUS_NOT_STARTED;
+            }
+
         }
     }
 

@@ -12,8 +12,8 @@
 
     <View
         android:id="@+id/clip_area"
-        android:layout_width="360dp"
-        android:layout_height="240dp"
+        android:layout_width="320dp"
+        android:layout_height="214dp"
         android:layout_gravity="center"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"

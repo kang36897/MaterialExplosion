@@ -46,7 +46,7 @@ public class ImageUtils {
                     ExifInterface.TAG_ORIENTATION, -1);
             if (orientation != -1) {
                 // We only recognize a subset of orientation tag values.
-                switch(orientation) {
+                switch (orientation) {
                     case ExifInterface.ORIENTATION_ROTATE_90:
                         degree = 90;
                         break;
@@ -66,17 +66,15 @@ public class ImageUtils {
     public static void clipImage(byte[] data, Point[] sensitiveAreas, MImage mImage) {
         File sourceFile = StorageUtil.getOutputMediaFile(StorageUtil.MEDIA_TYPE_IMAGE);
 
-        if(sourceFile == null){
+        if (sourceFile == null) {
             Log.e("TAG", "clipImage()-> can not get a path to save images");
-            return ;
+            return;
         }
 
-        saveImage(data,sourceFile);
+        saveImage(data, sourceFile);
 
         int rotateDegree = getExifOrientation(sourceFile.getAbsolutePath());
 
-        File image;
-        FileOutputStream outputStream;
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inScaled = false;
         opts.inJustDecodeBounds = true;
@@ -107,7 +105,13 @@ public class ImageUtils {
         Bitmap clippedOne = Bitmap.createBitmap(source, x, y, wd, wh, m, false);
         source.recycle();
 
+
+        int maxLength = 1152;
+        clippedOne = scaleImage(clippedOne, maxLength);
+
+        Log.d(TAG, "img width = " + clippedOne.getWidth() + ", height = " + clippedOne.getHeight());
         saveImage(clippedOne, sourceFile);
+        Log.d(TAG, "img file size = " + sourceFile.length() / 1024 + "kb");
         if (mImage == null) {
             clippedOne.recycle();
         } else {
@@ -117,11 +121,30 @@ public class ImageUtils {
 
     }
 
+    private static Bitmap scaleImage(Bitmap sourceImage, int maxLength) {
+
+        int wd = sourceImage.getWidth();
+        int wh = sourceImage.getHeight();
+
+        if (wd > wh) {
+            wh = maxLength * wh / wd;
+            wd = maxLength;
+        } else {
+            wd = maxLength * wd / wh;
+            wh = maxLength;
+        }
+
+        Bitmap temp = Bitmap.createScaledBitmap(sourceImage, wd, wh, false);
+        sourceImage.recycle();
+
+        return temp;
+    }
+
     public static void saveImage(Bitmap clippedOne, File sourceFile) {
         FileOutputStream outputStream;
         try {
             outputStream = new FileOutputStream(sourceFile);
-            clippedOne.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
+            clippedOne.compress(Bitmap.CompressFormat.JPEG, 40, outputStream);
             outputStream.close();
 
         } catch (FileNotFoundException e) {

@@ -1,15 +1,10 @@
 package com.curious.donkey.activity;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.FocusFinder;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.Button;
@@ -23,9 +18,6 @@ import com.curious.donkey.view.CameraPreview;
 import com.curious.support.logger.Log;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Created by Administrator on 2016/4/7.

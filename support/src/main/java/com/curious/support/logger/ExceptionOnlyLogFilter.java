@@ -15,7 +15,7 @@ public class ExceptionOnlyLogFilter implements LogNode {
     @Override
     public void println(int priority, String tag, String msg, Throwable tr) {
 
-        if (tr == null) {
+        if (tr == null && priority != Log.TREASURE) {
             return;
         }
 

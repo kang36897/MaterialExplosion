@@ -33,6 +33,8 @@ public class Log {
     public static final int WARN = android.util.Log.WARN;
     public static final int ERROR = android.util.Log.ERROR;
     public static final int ASSERT = android.util.Log.ASSERT;
+    // use this
+    public static final int TREASURE = 8;
 
     // Stores the beginning of the LogNode topology.
     private static LogNode mLogNode;
@@ -232,5 +234,15 @@ public class Log {
      */
     public static void wtf(String tag, Throwable tr) {
         wtf(tag, null, tr);
+    }
+
+
+    public static void t(String tag, String msg, Throwable tr) {
+        println(TREASURE, tag, msg, tr);
+    }
+
+
+    public static void t(String tag, String msg) {
+        t(tag, msg, null);
     }
 }

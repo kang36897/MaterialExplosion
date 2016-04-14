@@ -33,7 +33,7 @@ public class Log {
     public static final int WARN = android.util.Log.WARN;
     public static final int ERROR = android.util.Log.ERROR;
     public static final int ASSERT = android.util.Log.ASSERT;
-    // use this
+    // use this level to write logs to file directly
     public static final int TREASURE = 8;
 
     // Stores the beginning of the LogNode topology.

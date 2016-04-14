@@ -72,7 +72,7 @@ public class LogFile implements LogNode {
         }
     }
 
-    private void writeLogToFile(File output, String log) {
+    private synchronized void writeLogToFile(File output, String log) {
         BufferedWriter writer = null;
         try {
 

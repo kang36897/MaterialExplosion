@@ -17,6 +17,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.android.debug.hv.ViewServer;
 import com.curious.donkey.R;
 import com.curious.donkey.data.MImage;
 import com.curious.donkey.device.CameraHolderSuper;
@@ -137,7 +138,7 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_on_main_loop);
-
+        ViewServer.get(this).addWindow(this);
         mCameraHolder = new CameraHolderSuper();
         mCameraHolder.setOnCameraEventListener(this);
 
@@ -173,9 +174,16 @@ public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCam
     @Override
     protected void onResume() {
         super.onResume();
+        ViewServer.get(this).setFocusedWindow(this);
         Log.d(TAG, "onResume()");
         mOrientationEventListener.enable();
         initializeFocusTone();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ViewServer.get(this).removeWindow(this);
     }
 
     @Override

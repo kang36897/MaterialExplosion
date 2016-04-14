@@ -109,9 +109,9 @@ public class ImageUtils {
         int maxLength = 1152;
         clippedOne = scaleImage(clippedOne, maxLength);
 
-        Log.d(TAG, "img width = " + clippedOne.getWidth() + ", height = " + clippedOne.getHeight());
+        Log.t(TAG, "img width = " + clippedOne.getWidth() + ", height = " + clippedOne.getHeight());
         saveImage(clippedOne, sourceFile);
-        Log.d(TAG, "img file size = " + sourceFile.length() / 1024 + "kb");
+        Log.t(TAG, "img file size = " + sourceFile.length() / 1024 + "kb");
         if (mImage == null) {
             clippedOne.recycle();
         } else {

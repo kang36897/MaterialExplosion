@@ -33,7 +33,7 @@ import com.curious.support.logger.Log;
 /**
  * Created by lulala on 9/4/16.
  */
-public class CameraOnMainLoopActivity extends AppCompatActivity implements OnCameraEventListener,
+public class CameraOnMainLoopActivity extends BaseActivity implements OnCameraEventListener,
         ShutterButton.OnShutterButtonListener, ImageReviewFragment.OnImageActionListener {
 
     private static final String TAG = "CameraOnMainLoopActivity";

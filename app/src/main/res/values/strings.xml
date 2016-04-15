@@ -4,4 +4,7 @@
     <string name="action_recapture">Drop this one</string>
     <string name="action_chosen">Take this one</string>
     <string name="save_img_in_progress"><![CDATA[Image  Saving ...]]></string>
+    <string name="case_camera_on_main_loop">Camera Operations On Main Thread</string>
+    <string name="case_show_local_web_page">Show Web Page In Asset Folder</string>
+    <string name="case_show_remote_web_page">Show Remote Web Page</string>
 </resources>

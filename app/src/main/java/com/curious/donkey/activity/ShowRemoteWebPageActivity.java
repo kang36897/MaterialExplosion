@@ -15,14 +15,14 @@ import com.curious.support.logger.Log;
 /**
  * Created by Administrator on 2016/3/30.
  */
-public class ShowRemoteWebPageActivity extends AppCompatActivity {
+public class ShowRemoteWebPageActivity extends BaseActivity {
     final static String TAG = "ShowRemoteWebPage";
     private WebView mWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_web_page);
 
         mWebView = (WebView) findViewById(R.id.webView);

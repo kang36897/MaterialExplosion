@@ -19,8 +19,17 @@ public class ExceptionOnlyLogFilter implements LogNode {
             return;
         }
 
+        String useMsg = msg;
+        if (useMsg == null) {
+            useMsg = "";
+        }
+
+        if (tr != null) {
+            useMsg += "\n" + android.util.Log.getStackTraceString(tr);
+        }
+
         if (mNext != null) {
-            mNext.println(Log.NONE, tag, msg, null);
+            mNext.println(Log.NONE, tag, useMsg, tr);
         }
     }
 

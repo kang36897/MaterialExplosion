@@ -22,7 +22,7 @@ import java.io.File;
 /**
  * Created by Administrator on 2016/4/7.
  */
-public class PhotoTakenActivity extends AppCompatActivity implements CameraHolder.OnCameraEventListener {
+public class PhotoTakenActivity extends BaseActivity implements CameraHolder.OnCameraEventListener {
 
     private static final String TAG = "PhotoTakenActivity";
     private CameraPreview mPreview;

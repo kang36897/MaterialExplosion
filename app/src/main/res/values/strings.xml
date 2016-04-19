@@ -7,4 +7,12 @@
     <string name="case_camera_on_main_loop">Camera Operations On Main Thread</string>
     <string name="case_show_local_web_page">Show Web Page In Asset Folder</string>
     <string name="case_show_remote_web_page">Show Remote Web Page</string>
+    <string name="ok">Ok</string>
+    <string name="hint_request_camera_permission_title">Access Camera</string>
+    <string name="hint_request_location_permission_title">Access Location</string>
+    <string name="hint_request_camera_permission_content">This function need camera permission be granted.</string>
+    <string name="hint_request_location_permission_content">This function need location service be granted.</string>
+    <string name="hint_request_storage_permission_title">Access Storage</string>
+    <string name="hint_request_storage_permission_content">This function need data storage be granted.</string>
+    <string name="case_passive_get_location"> Require Location Information Passively</string>
 </resources>

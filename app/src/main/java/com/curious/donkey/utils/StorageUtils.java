@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * Created by Administrator on 2015/11/18.
  */
-public class StorageUtil {
+public class StorageUtils {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;

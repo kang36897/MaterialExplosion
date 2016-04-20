@@ -64,7 +64,7 @@ public class ImageUtils {
     }
 
     public static void clipImage(byte[] data, Point[] sensitiveAreas, MImage mImage) {
-        File sourceFile = StorageUtil.getOutputMediaFile(StorageUtil.MEDIA_TYPE_IMAGE);
+        File sourceFile = StorageUtils.getOutputMediaFile(StorageUtils.MEDIA_TYPE_IMAGE);
 
         if (sourceFile == null) {
             Log.e("TAG", "clipImage()-> can not get a path to save images");
@@ -109,9 +109,9 @@ public class ImageUtils {
         int maxLength = 1152;
         clippedOne = scaleImage(clippedOne, maxLength);
 
-        Log.t(TAG, "img width = " + clippedOne.getWidth() + ", height = " + clippedOne.getHeight());
+        Log.d(TAG, "img width = " + clippedOne.getWidth() + ", height = " + clippedOne.getHeight());
         saveImage(clippedOne, sourceFile);
-        Log.t(TAG, "img file size = " + sourceFile.length() / 1024 + "kb");
+        Log.d(TAG, "img file size = " + sourceFile.length() / 1024 + "kb");
         if (mImage == null) {
             clippedOne.recycle();
         } else {
@@ -188,7 +188,7 @@ public class ImageUtils {
         Bitmap clippedOne = Bitmap.createBitmap(source, x, y, wd, wh, m, false);
         source.recycle();
 
-        image = StorageUtil.getOutputMediaFile(StorageUtil.MEDIA_TYPE_IMAGE);
+        image = StorageUtils.getOutputMediaFile(StorageUtils.MEDIA_TYPE_IMAGE);
         saveImage(clippedOne, image);
         if (mImage == null) {
             clippedOne.recycle();

@@ -1,6 +1,7 @@
 package com.curious.donkey.activity;
 
 import android.os.Bundle;
+import android.support.v4.view.WindowCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -15,17 +16,20 @@ import com.curious.support.logger.Log;
 /**
  * Created by Administrator on 2016/3/30.
  */
-public class ShowRemoteWebPageActivity extends BaseActivity {
+public class ShowRemoteWebPageActivity extends BaseActivity  {
     final static String TAG = "ShowRemoteWebPage";
     private WebView mWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
+        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_web_page);
+        getSupportActionBar().setHideOnContentScrollEnabled(true);
 
         mWebView = (WebView) findViewById(R.id.webView);
+
         mWebView.getSettings().setJavaScriptEnabled(true);
         Log.d(TAG, mWebView.getSettings().getUserAgentString());
         mWebView.setWebChromeClient(new DummyChromeClient().showProgressLikeBrowser());

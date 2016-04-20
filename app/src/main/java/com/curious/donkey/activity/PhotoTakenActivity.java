@@ -13,7 +13,7 @@ import com.curious.donkey.R;
 import com.curious.donkey.device.CameraHolder;
 import com.curious.donkey.utils.CameraUtils;
 import com.curious.donkey.utils.ImageUtils;
-import com.curious.donkey.utils.StorageUtil;
+import com.curious.donkey.utils.StorageUtils;
 import com.curious.donkey.view.CameraPreview;
 import com.curious.support.logger.Log;
 
@@ -36,7 +36,7 @@ public class PhotoTakenActivity extends BaseActivity implements CameraHolder.OnC
     private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            File image = StorageUtil.getOutputMediaFile(StorageUtil.MEDIA_TYPE_IMAGE);
+            File image = StorageUtils.getOutputMediaFile(StorageUtils.MEDIA_TYPE_IMAGE);
             ImageUtils.saveImage(data, image);
 
             //clip the img

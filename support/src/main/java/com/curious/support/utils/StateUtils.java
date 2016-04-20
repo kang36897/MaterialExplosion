@@ -17,7 +17,7 @@ public class StateUtils {
         return mActiveNetwork.isConnectedOrConnecting();
     }
 
-    public static boolean isInternetAccessable(Context context) {
+    public static boolean isInternetAccessible(Context context) {
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mActiveNetwork = manager.getActiveNetworkInfo();
 

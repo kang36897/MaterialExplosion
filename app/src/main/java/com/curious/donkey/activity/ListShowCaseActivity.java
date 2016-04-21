@@ -90,9 +90,19 @@ public class ListShowCaseActivity extends AppCompatActivity {
                     if (activityInfo.name.equals(CameraOnMainLoopActivity.class.getName())) {
                         if (!PermissionUtils.checkPermissionGranted(ListShowCaseActivity.this,
                                 Manifest.permission.CAMERA)) {
-                            PermissionUtils.showRequestPermissionRationale(ListShowCaseActivity.this,
-                                    PermissionRequestHint.getHint(Const.REQUEST_PERMISSION_ABOUT_CAMERA,
-                                            PermissionRequestHint.DIALOG_HINT));
+                            PermissionRequestHint hint = PermissionRequestHint
+                                    .getHint(Const.REQUEST_PERMISSION_ABOUT_CAMERA,
+                                            PermissionRequestHint.DIALOG_HINT);
+                            hint.positiveCallback = new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    PermissionUtils.requestNeededPermission(ListShowCaseActivity.this, new String[]{
+                                                    Manifest.permission.CAMERA
+                                            }, Const.REQUEST_PERMISSION_ABOUT_CAMERA
+                                    );
+                                }
+                            };
+                            PermissionUtils.showRequestPermissionRationale(ListShowCaseActivity.this, hint);
 
                             return;
                         }
